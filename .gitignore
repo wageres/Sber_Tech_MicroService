@@ -1,4 +1,4 @@
 *.class
-target/
+SberTaskAPI/target/
 *.iml
-.idea/
+SberTaskAPI/.idea/
