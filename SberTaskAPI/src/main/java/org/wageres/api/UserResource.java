@@ -40,13 +40,13 @@ public class UserResource
         }
         catch (NumberFormatException e)
         {
-            return  Response.status(Response.Status.BAD_REQUEST).build();
+            return  Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"invalid user id!\"}").build();
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         User user = UserDao.getInstance().getUser(keyId);
         if(user == null)
         {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"message\":\"user with given id does not exist!\"}").build();
         }
         final String json = gson.toJson(user);
 
@@ -67,7 +67,7 @@ public class UserResource
             }
             catch (NumberFormatException e)
             {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"invalid user id!\"}").build();
             }
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -75,15 +75,15 @@ public class UserResource
 
             if(UserDao.getInstance().isOccupiedKey(keyId,recUser))
             {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"This user already exists!\"}").build();
             }
 
             if(!UserDao.getInstance().updateUser(keyId,recUser))
             {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("{\"message\":\"user with given id does not exist!\"}").build();
             }
 
-            return  Response.status(Response.Status.OK).build();
+            return  Response.status(Response.Status.OK).entity("{\"UserId\":\""+keyId+"\"}").build();
 
         }
         catch (Exception e)
@@ -106,13 +106,13 @@ public class UserResource
             }
             catch (NumberFormatException e)
             {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"invalid user id!\"}").build();
             }
 
             User user = UserDao.getInstance().deleteUser(keyId);
             if(user == null)
             {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("{\"message\":\"user with given id does not exist!\"}").build();
             }
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -139,9 +139,9 @@ public class UserResource
 
             User recUser = gson.fromJson(json, User.class);
 
-            if(recUser.getIdentifier() <= 0 || recUser.getName() == "")
+            if(recUser.getIdentifier() <= 0 || recUser.getName() == "" || recUser.getName().length() > 90)
             {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"invalid user!\"}").build();
             }
 
             if (UserDao.getInstance().addUser(recUser)) {
@@ -152,7 +152,7 @@ public class UserResource
         }
         catch (Exception e)
         {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"invalid user!\"}").build();
         }
 
     }

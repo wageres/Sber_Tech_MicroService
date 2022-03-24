@@ -25,7 +25,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @WebFilter(urlPatterns = "/*")
@@ -58,6 +60,10 @@ public class LogFilter implements Filter
         }
         long start = System.currentTimeMillis();
 
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Date date = new Date();
+        String RequestDate = dateFormat.format(date);
+
         chain.doFilter(request,response);
 
         long reqTime = System.currentTimeMillis() - start;
@@ -65,14 +71,14 @@ public class LogFilter implements Filter
         HttpServletResponse resp = (HttpServletResponse)(response);
         int status = resp.getStatus();
 
-        RequestLog logs = new RequestLog(reqTime,reqAction,ipAddress,reqUrl,status);
+        RequestLog logs = new RequestLog(reqTime,reqAction,ipAddress,reqUrl,status,RequestDate);
 
         this.sendLogs(logs);
     }
 
     private void sendLogs(RequestLog logs)
     {
-        final String LogServiceUrl = "http://localhost:8080/api/users";
+        final String LogServiceUrl = "";
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(logs);
