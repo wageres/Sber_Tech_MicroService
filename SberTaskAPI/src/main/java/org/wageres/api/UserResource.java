@@ -73,9 +73,14 @@ public class UserResource
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             User recUser = gson.fromJson(json, User.class);
 
+            if(recUser.getIdentifier() <= 0 || recUser.getName() == "" || recUser.getName().length() > 90)
+            {
+                return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"invalid user!\"}").build();
+            }
+
             if(UserDao.getInstance().isOccupiedKey(keyId,recUser))
             {
-                return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"This user already exists!\"}").build();
+                return Response.status(Response.Status.CONFLICT).entity("{\"message\":\"This user already exists!\"}").build();
             }
 
             if(!UserDao.getInstance().updateUser(keyId,recUser))
