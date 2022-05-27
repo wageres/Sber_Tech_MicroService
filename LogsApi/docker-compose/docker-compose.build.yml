@@ -1,0 +1,8 @@
+version: "3.6"
+services:
+  report-service:
+    build:
+      context: report-service/
+      args:
+        JAR_FILE: target/report-service.jar
+
