@@ -1,4 +1,6 @@
 *.class
 SberTaskAPI/target/
+LogsApi/target/
 *.iml
 SberTaskAPI/.idea/
+LogsApi/.idea/
